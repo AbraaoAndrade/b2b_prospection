@@ -11,6 +11,7 @@ import tqdm as tq
 import pickle
 import os
 from io import BytesIO
+import xlsxwriter
 
 import requests
 import json
@@ -383,6 +384,9 @@ def app():
             data=st.session_state.b2b_report_env.to_excel(),
             file_name="report.xlsx")
 
+st.set_page_config(page_title="B2B prospection",
+                    layout="centered",
+                    initial_sidebar_state="auto")
 
 page = st_switcher()
 st.markdown("# Prospecção de clientes B2B")
@@ -390,7 +394,7 @@ st.markdown("# Prospecção de clientes B2B")
 if 'b2b_report_env' not in st.session_state:
     st.session_state['b2b_report_env'] = b2b_report()
 
-if page == 'yin':
-    about()
-else:
+if page == 'yang':
     app()
+else:
+    about()

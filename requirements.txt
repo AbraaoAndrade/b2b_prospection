@@ -11,3 +11,4 @@ st_switcher==0.1.0
 streamlit==1.16.0
 streamlit_folium==0.8.1
 tqdm==4.64.1
+XlsxWriter==3.0.3
