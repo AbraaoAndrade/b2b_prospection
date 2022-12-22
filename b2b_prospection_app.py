@@ -304,6 +304,7 @@ def app():
     if not st.session_state.b2b_report_env.formatted_report.empty:
         if button_reset:
             st.session_state.clear()
+            st.experimental_rerun()
 
         # add number
     if not st.session_state.b2b_report_env.report.empty:
