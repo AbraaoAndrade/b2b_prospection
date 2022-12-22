@@ -339,9 +339,9 @@ def app():
     m.fit_bounds(st.session_state.b2b_report_env.get_zoom_coordinates()) 
             # desenhando cidades
     if checkbox_cidades:
-        for row in st.session_state.b2b_report_env.geojson.query(f'name != {list(st.session_state.b2b_report_env.selected_cities)}').itertuples():
+        for row in st.session_state.b2b_report_env.geojson.query(f'name != {list(cidades_selecionadas)}').itertuples():
             folium.GeoJson(data=row.coord, style_function=lambda x:red).add_to(m) 
-    for row in st.session_state.b2b_report_env.geojson.query(f'name == {list(st.session_state.b2b_report_env.selected_cities)}').itertuples():
+    for row in st.session_state.b2b_report_env.geojson.query(f'name == {list(cidades_selecionadas)}').itertuples():
         folium.GeoJson(data=row.coord, style_function=lambda x:green).add_to(m) 
             # desenhando segmentos
     if checkbox_segmentos and cidades_selecionadas:
