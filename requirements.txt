@@ -7,7 +7,7 @@ pandas==1.5.2
 requests==2.28.1
 seaborn==0.12.1
 shapely==2.0.0
-st_switcher==0.1.0
+st_switcher==0.1.2
 streamlit==1.16.0
 streamlit_folium==0.8.1
 tqdm==4.64.1
