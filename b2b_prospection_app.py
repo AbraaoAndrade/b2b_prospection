@@ -396,6 +396,7 @@ if 'b2b_report_env' not in st.session_state:
     st.session_state['b2b_report_env'] = b2b_report()
 
 if page == 'yang':
-    app()
-else:
     about()
+else:
+    app()
+    
