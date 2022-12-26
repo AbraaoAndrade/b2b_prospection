@@ -240,7 +240,7 @@ class b2b_report:
         self.report["phone_number"] = numbers_list
         self.report["opening_hours"] = opening_hours_list
 
-        self.formatted_report = self.report.sort_values("phone_number")
+        self.formatted_report = self.report.sort_values(["phone_number", "opening_hours"])
         self.formatted_report = self.formatted_report.reset_index(drop=True)
         columns = ['tipo', 'name', 'vicinity', 'phone_number', 'opening_hours', 'user_ratings_total', 'rating', "lat", "lng"]
         new_columns = ['Tipo', 'Nome', 'Endereço', 'Telefone', 'Horário de Funcionamento', 'Número de avaliações', 'Avaliação', 'Latitude', 'Longitude']
