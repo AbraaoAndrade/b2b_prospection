@@ -203,7 +203,7 @@ class b2b_report:
                 formatted_phone_number = np.nan
             if "current_opening_hours" in list(result.keys()):
                 weekday_text = " > ".join(result["current_opening_hours"]["weekday_text"])
-                for key, value in replace_dict.items():
+                for key, value in weekday_text_replace_dict.items():
                     weekday_text = weekday_text.replace(key, value)
             else:
                 weekday_text = np.nan
