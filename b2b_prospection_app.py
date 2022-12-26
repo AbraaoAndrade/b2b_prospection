@@ -130,7 +130,7 @@ class b2b_report:
             
             return prev_gasto_usd, prev_gasto_brl
 
-    def get_b2b_clients_by_loc(self, loc, radius, type, api_key):
+    def get_b2b_clients_by_loc(self, loc, radius, type):
         # 1. Setup
         def json2df_results(results_json):
             # get json results and transform in DF
@@ -150,7 +150,6 @@ class b2b_report:
         
 
         url = "https://maps.googleapis.com/maps/api/place/{method}/json?{paramns}&key={key}"
-        API_KEY = api_key
         payload={}
         headers = {}
 
@@ -158,7 +157,7 @@ class b2b_report:
         # 2. First request
         url_nearbysearch_first = url.format(method="nearbysearch", 
                                             paramns=f"location={loc[0]}%2C{loc[1]}&radius={radius}&type={type}",
-                                            key=API_KEY)
+                                            key=self.API_KEY)
         response = requests.request("GET", url_nearbysearch_first, headers=headers, data=payload).json()
         if response["status"] == "OK":
             results_df = json2df_results(response["results"])
@@ -169,21 +168,16 @@ class b2b_report:
                 
                 url_nearbysearch = url.format(method="nearbysearch", 
                                             paramns=f"pagetoken={response['next_page_token']}",
-                                            key=API_KEY)
+                                            key=self.API_KEY)
                 response = requests.request("GET", url_nearbysearch, headers=headers, data=payload).json()
 
                 if response["status"] == "OK":
                     results_df_temp = json2df_results(response["results"])
 
                     results_df = pd.concat([results_df, results_df_temp])
-            
-            # 4. Adding phone number
-            # placeid2phone_map = {}
-            # for place_id in results_df["place_id"]:
-            #     placeid2phone_map[place_id] = get_phone_number(place_id)
+           
 
             results_df.index = range(len(results_df))
-            # results_df["phone_number"] = results_df["place_id"].map(placeid2phone_map)
 
             return results_df
         
@@ -192,14 +186,12 @@ class b2b_report:
 
     def get_details(self, place_id):
         url = "https://maps.googleapis.com/maps/api/place/{method}/json?{paramns}&key={key}"
-        with open('api_key.txt') as f:
-            API_KEY = f.read()
         payload={}
         headers = {}
         # get details: phone number, current_opening_hours
         url_details = url.format(method="details", 
                                 paramns=f"place_id={place_id}&fields=formatted_phone_number%2Ccurrent_opening_hours",
-                                key=API_KEY)
+                                key=self.API_KEY)
         response_details = requests.request("GET", url_details, headers=headers, data=payload)
         result = response_details.json()["result"]
         
@@ -225,7 +217,7 @@ class b2b_report:
         report = pd.DataFrame([])
         results_per_loc = []
         for i, loc in enumerate(self.segment_coordinates):
-            report_temp = self.get_b2b_clients_by_loc(loc, self.radius_km, type, self.API_KEY)
+            report_temp = self.get_b2b_clients_by_loc(loc, self.radius_km, type)
             results_per_loc.append(len(report_temp))
             report = pd.concat([report, report_temp])
 
@@ -236,7 +228,7 @@ class b2b_report:
         self.results_per_loc = results_per_loc
         self.report = report
     
-    def add_number(self):
+    def add_details(self):
 
         numbers_list = []
         opening_hours_list = []
@@ -324,7 +316,7 @@ def app():
         # add details
     if not st.session_state.b2b_report_env.report.empty:
         if button_add_details:
-            st.session_state.b2b_report_env.add_number()
+            st.session_state.b2b_report_env.add_details()
             st.experimental_rerun()
             
         # gera relatorio
