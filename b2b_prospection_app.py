@@ -117,12 +117,12 @@ class b2b_report:
         dist_km = hs.haversine(coord_list[0],coord_list[1])*1000
         self.radius_km = dist_km/2
 
-    def budget(self, number=False): 
-        if number:
-            prev_gasto_number_usd = round(len(self.report)*0.017, 2)
-            prev_gasto_number_brl = round(prev_gasto_number_usd*self.USD2BRL, 2)
+    def budget(self, details=False): 
+        if details:
+            prev_gasto_details_usd = round(len(self.report)*0.017, 2)
+            prev_gasto_details_brl = round(prev_gasto_details_usd*self.USD2BRL, 2)
 
-            return prev_gasto_number_usd, prev_gasto_number_brl
+            return prev_gasto_details_usd, prev_gasto_details_brl
                        
         else:
             prev_gasto_usd = round(len(self.segment_coordinates)*3*0.032, 2)
@@ -190,24 +190,35 @@ class b2b_report:
         else:
             return pd.DataFrame([])
 
-    def get_phone_number(self, place_id):
+    def get_details(self, place_id):
         url = "https://maps.googleapis.com/maps/api/place/{method}/json?{paramns}&key={key}"
         with open('api_key.txt') as f:
             API_KEY = f.read()
         payload={}
         headers = {}
-        # get details: phone number
+        # get details: phone number, current_opening_hours
         url_details = url.format(method="details", 
-                                paramns=f"place_id={place_id}&fields=formatted_phone_number",
+                                paramns=f"place_id={place_id}&fields=formatted_phone_number%2Ccurrent_opening_hours",
                                 key=API_KEY)
         response_details = requests.request("GET", url_details, headers=headers, data=payload)
         result = response_details.json()["result"]
-        if bool(result):
-            phone_number = result["formatted_phone_number"]
-        else: 
-            phone_number = np.nan
         
-        return phone_number
+        weekday_text_replace_dict = {"\u2009–\u2009":"-", "\u202f":" ", "Monday":"seg", "Tuesday":"ter", "Wednesday":"qua", "Thursday":"qui", "Friday":"sex", "Saturday":"sab", "Sunday":"dom"}
+        if bool(result):
+            if "formatted_phone_number" in list(result.keys()):
+                formatted_phone_number = result["formatted_phone_number"]
+            else:
+                formatted_phone_number = np.nan
+            if "current_opening_hours" in list(result.keys()):
+                weekday_text = " > ".join(result["current_opening_hours"]["weekday_text"])
+                for key, value in replace_dict.items():
+                    weekday_text = weekday_text.replace(key, value)
+            else:
+                weekday_text = np.nan
+        else:
+            formatted_phone_number, weekday_text = np.nan, np.nan
+
+        return formatted_phone_number, weekday_text
 
     def get_report(self, API_KEY, type):
         self.API_KEY = API_KEY
@@ -228,15 +239,19 @@ class b2b_report:
     def add_number(self):
 
         numbers_list = []
+        opening_hours_list = []
         for i, place_id in enumerate(self.report["place_id"]):
-            numbers_list.append(self.get_phone_number(place_id))
+            number, opening_hours = self.get_details(place_id)
+            numbers_list.append(number)
+            opening_hours_list.append(opening_hours)
             self.progress_bar.progress((i+1)/len(self.report))
         self.report["phone_number"] = numbers_list
+        self.report["opening_hours"] = opening_hours_list
 
         self.formatted_report = self.report.sort_values("phone_number")
         self.formatted_report = self.formatted_report.reset_index(drop=True)
-        columns = ['tipo', 'name', 'vicinity', 'phone_number', 'user_ratings_total', 'rating', "lat", "lng"]
-        new_columns = ['Tipo', 'Nome', 'Endereço', 'Telefone', 'Número de avaliações', 'Avaliação', 'Latitude', 'Longitude']
+        columns = ['tipo', 'name', 'vicinity', 'phone_number', 'opening_hours', 'user_ratings_total', 'rating', "lat", "lng"]
+        new_columns = ['Tipo', 'Nome', 'Endereço', 'Telefone', 'Horário de Funcionamento', 'Número de avaliações', 'Avaliação', 'Latitude', 'Longitude']
         self.formatted_report = self.formatted_report[columns]
         self.formatted_report.columns = new_columns
 
@@ -285,7 +300,7 @@ def app():
         button_gerar_relatorio = st.button("Gerar")
     with c2:
         if not st.session_state.b2b_report_env.report.empty:
-            button_add_phone = st.button("ADD telefone")
+            button_add_details = st.button("ADD detalhes")
     with c3:
         if not st.session_state.b2b_report_env.formatted_report.empty:
             st.download_button(label="Baixar Relatório",
@@ -306,9 +321,9 @@ def app():
             st.session_state.clear()
             st.experimental_rerun()
 
-        # add number
+        # add details
     if not st.session_state.b2b_report_env.report.empty:
-        if button_add_phone:
+        if button_add_details:
             st.session_state.b2b_report_env.add_number()
             st.experimental_rerun()
             
@@ -325,12 +340,12 @@ def app():
         # previsão de gastos
     if not st.session_state.b2b_report_env.report.empty:
         prev_gasto_usd, prev_gasto_brl = st.session_state.b2b_report_env.budget()
-        prev_gasto_number_usd, prev_gasto_number_brl = st.session_state.b2b_report_env.budget(number=True)
-        st.warning(f"""Previsão de gasto: \n- Relatorio    : {prev_gasto_usd} USD ~ {prev_gasto_brl} BRL (sem telefones)
-                     \n- ADD telefones: {prev_gasto_number_usd} USD ~ {prev_gasto_number_brl} BRL""")
+        prev_gasto_details_usd, prev_gasto_details_brl = st.session_state.b2b_report_env.budget(details=True)
+        st.warning(f"""Previsão de gasto: \n- Relatorio    : {prev_gasto_usd} USD ~ {prev_gasto_brl} BRL (sem detalhes)
+                     \n- ADD telefones: {prev_gasto_details_usd} USD ~ {prev_gasto_details_brl} BRL""")
     else:
         prev_gasto_usd, prev_gasto_brl = st.session_state.b2b_report_env.budget()
-        st.warning(f"Previsão de gasto: \n- Relatorio    : {prev_gasto_usd} USD ~ {prev_gasto_brl} BRL (sem telefones)")
+        st.warning(f"Previsão de gasto: \n- Relatorio    : {prev_gasto_usd} USD ~ {prev_gasto_brl} BRL (sem detalhes)")
     
 
         # mapa
