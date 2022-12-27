@@ -3,12 +3,44 @@ import folium
 from streamlit_folium import folium_static
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
-
 from st_switcher import st_switcher
+from streamlit_authenticator import Authenticate, Hasher
+import yaml
+import os
+
+
 from b2b_report import *
+from send_email import *
 
 def about():
-    st.text("about")
+    get_api_key_url = "https://developers.google.com/maps/documentation/places/web-service/get-api-key"
+    st.warning("""
+    Nesse projeto foi utilizada a API Places, um serviço da Google que retorna informações sobre lugares usando solicitações HTTP. \
+    As interações com esse serviço se dão mediante uma chave de API, portanto, para experimentar o APP será necessário [criar uma chave](%s).
+    """% get_api_key_url)
+
+    with st.form("email_form", clear_on_submit=False):
+        fullname = st.text_input(label="Nome Completo", placeholder="Porfavor digite seu nome completo")
+        email = st.text_input(label="Email", placeholder="Porfavor digite seu email")
+        text = st.text_area(label="Texto", placeholder="Porfavor digite sua mensagem aqui")
+
+        submitted = st.form_submit_button("Enviar")
+    
+    if submitted:
+        extra_info = """
+        ---------------------------------------------------------------------------- \n
+         Email Address of Sender: {} 
+         Sender Full Name: {} \n
+        ---------------------------------------------------------------------------- \n \n
+        """.format(email, fullname)
+
+        message = extra_info + text
+
+        send_email(sender="lukandrad5@gmail.com", password=os.environ["EMAIL_KEY"],
+        receiver="lukandrad5@gmail.com", smtp_server="smtp.gmail.com", smtp_port=587,
+        email_message=message, subject="B2B prospection APP")
+
+
 
 def app():
 
@@ -64,9 +96,14 @@ def app():
             st.experimental_rerun()
             
         # gera relatorio
-    if button_gerar_relatorio:
+    if button_gerar_relatorio and st.session_state.authentication_status:
         st.session_state.b2b_report_env.get_report(API_KEY, type)
         st.experimental_rerun()
+    elif button_gerar_relatorio and st.session_state.authentication_status != True:
+        st.session_state.sidebar_state = 'expanded'
+        st.experimental_rerun()
+    else:
+        st.session_state.sidebar_state = 'collapsed'
 
         
     # 3. resultados --------------------------------------------------------------------------------------------
@@ -74,7 +111,7 @@ def app():
     if not st.session_state.b2b_report_env.report.empty:
         prev_gasto_usd, prev_gasto_brl = st.session_state.b2b_report_env.budget()
         prev_gasto_details_usd, prev_gasto_details_brl = st.session_state.b2b_report_env.budget(details=True)
-        st.warning(f"""Previsão de gasto: \n- Relatorio    : {prev_gasto_usd} USD ~ {prev_gasto_brl} BRL (sem detalhes)
+        st.warning(f"""Previsão de gasto: \n- Relatório    : {prev_gasto_usd} USD ~ {prev_gasto_brl} BRL (sem detalhes)
                      \n- ADD detalhes: {prev_gasto_details_usd} USD ~ {prev_gasto_details_brl} BRL""")
     else:
         prev_gasto_usd, prev_gasto_brl = st.session_state.b2b_report_env.budget()
@@ -109,7 +146,7 @@ def app():
     if not st.session_state.b2b_report_env.report.empty:
         st.markdown("### Resultados por Região")
         fig, ax = plt.subplots(figsize=[12,6])
-        ax.bar(range(1, len(st.session_state.b2b_report_env.results_per_loc)+1), st.session_state.b2b_report_env.results_per_loc, color="#FF4B4B")
+        ax.bar(range(1, len(st.session_state.b2b_report_env.results_per_loc)+1), st.session_state.b2b_report_env.results_per_loc, color="#31333F")
         ax.set_ylabel("Número de Resultados", fontsize=16)
         ax.xaxis.set_major_locator(MaxNLocator(integer=True))
         ax.tick_params(axis='both', which='major', labelsize=16, colors="#31333F")
@@ -135,11 +172,41 @@ def app():
             file_name="report.xlsx")
 
 
-
+if 'sidebar_state' not in st.session_state:
+    st.session_state['sidebar_state'] = 'collapsed'
 st.set_page_config(page_title="B2B prospection",
                     layout="centered",
-                    initial_sidebar_state="auto")
+                    page_icon=":handshake:",
+                    initial_sidebar_state=st.session_state.sidebar_state)
 
+# autentificação 
+with open('data/config.yaml') as file:
+    config = yaml.load(file, Loader=yaml.SafeLoader)
+
+authenticator = Authenticate(
+    config['credentials'],
+    config['cookie']['name'],
+    config['cookie']['key'],
+    config['cookie']['expiry_days'],
+    config['preauthorized']
+)
+
+if 'authentication_status' not in st.session_state:
+    st.session_state['authentication_status'] = None
+
+with st.sidebar:
+    name, st.session_state['authentication_status'], username = authenticator.login('Login', 'main')
+
+    if st.session_state.authentication_status:
+        authenticator.logout('Logout', 'main')
+        st.success(f'Welcome *{name}*')
+    elif st.session_state.authentication_status == False:
+        st.error('Username/password is incorrect')
+    elif st.session_state.authentication_status == None:
+        st.warning('Please enter your username and password')
+
+
+# pagina
 page = st_switcher()
 st.markdown("# Prospecção de clientes B2B")
 

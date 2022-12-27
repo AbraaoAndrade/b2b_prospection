@@ -1,0 +1,22 @@
+credentials:
+  usernames:
+    abraaoandrade:
+      email: abraaolpandrade@gmail.com
+      name: Abraao Andrade
+      password: $2b$12$fLWpe4oeT/FP38txvmtcv.k46ybRjRfuT/h.h8DB8oS17YSUURpJu
+    livilafonteneles:
+      email: livilafonteneles@gmail.com
+      name: Livila Fonteneles
+      password: $2b$12$1L7yHqopaw9.QAEOnUgmIecoGVS8p/FuuafoO100HRNM0DkF4XIpa
+    lucasgmmm:
+      email: lucasgmmm0310@gmail.com
+      name: Lucas Gabriel
+      password: $2b$12$DfZNCA6f4thhI7hFzO/AFOJnt9ZrXdumxiQJymjYo8FYjSx5VYn6y
+cookie:
+  expiry_days: 0
+  key: random_signature_key
+  name: random_cookie_name
+preauthorized:
+  emails:
+  - lukandrad5@gmail.com
+  - livilafonteneles@gmail.com
