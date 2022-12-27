@@ -4,10 +4,10 @@ from email.mime.text import MIMEText
 from email.header import Header
 from email.mime.application import MIMEApplication
 
-def send_email(receiver, smtp_server, smtp_port, email_message, subject, attachment=None):
+def send_email(smtp_server, smtp_port, email_message, subject, attachment=None):
     sender, password = os.environ.get("EMAIL"), os.environ.get("EMAIL_KEY")
     receiver = sender 
-    
+
     message = MIMEMultipart()
     message['To'] = Header(receiver)
     message['From']  = Header(sender)
