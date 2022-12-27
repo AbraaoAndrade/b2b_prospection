@@ -1,4 +1,4 @@
-name: b2b_prospection_app.py
+name: b2b_prospection_app
 
 on:
   schedule:
@@ -20,7 +20,7 @@ jobs:
       - name: execute py script # email-from-python.py
         env: 
           EMAIL_KEY: ${{ secrets.EMAIL_KEY }}
-        run: python email-from-python.py
+        run: python b2b_prospection_app.py
 Footer
 © 2022 GitHub, Inc.
 Footer navigation
