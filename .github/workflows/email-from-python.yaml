@@ -19,7 +19,7 @@ jobs:
 
       - name: execute py script # email-from-python.py
         env: 
-          EMAIL_API: ${{ secrets.EMAIL_API }}
+          EMAIL_KEY: ${{ secrets.EMAIL_KEY }}
         run: python email-from-python.py
 Footer
 © 2022 GitHub, Inc.
