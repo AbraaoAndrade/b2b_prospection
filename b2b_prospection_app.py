@@ -36,7 +36,7 @@ def about():
 
         message = extra_info + text
 
-        send_email(sender="lukandrad5@gmail.com", password=os.environ["EMAIL_KEY"],
+        send_email(sender="lukandrad5@gmail.com", password=os.environ.get("EMAIL_KEY"),
         receiver="lukandrad5@gmail.com", smtp_server="smtp.gmail.com", smtp_port=587,
         email_message=message, subject="B2B prospection APP")
 
