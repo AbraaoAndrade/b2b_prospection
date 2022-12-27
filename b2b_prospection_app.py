@@ -26,6 +26,7 @@ def about():
 
         submitted = st.form_submit_button("Enviar")
     
+    st.text(os.environ.get("EMAIL_KEY"))
     if submitted:
         extra_info = """
         ---------------------------------------------------------------------------- \n
@@ -36,9 +37,8 @@ def about():
 
         message = extra_info + text
 
-        send_email(sender="lukandrad5@gmail.com", password=os.environ.get("EMAIL_KEY"),
-        receiver="lukandrad5@gmail.com", smtp_server="smtp.gmail.com", smtp_port=587,
-        email_message=message, subject="B2B prospection APP")
+        send_email(receiver="lukandrad5@gmail.com", smtp_server="smtp.gmail.com", smtp_port=587,
+                        email_message=message, subject="B2B prospection APP")
 
 
 

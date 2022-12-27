@@ -1,23 +1,33 @@
-name: b2b_prospection_app
+name: Workflow with secrets
 
 on:
-  schedule:
-    - cron: '*/15 * * * *' # runs every 15 min
+  workflow_dispatch:
 
 jobs:
-  build:
+  show-secrets:
     runs-on: ubuntu-latest
+    env:
+      EMAIL: ${{ secrets.EMAIL }}
+      EMAIL_KEY: ${{ secrets.EMAIL_KEY }}
     steps:
-
-      - name: checkout repo content
-        uses: actions/checkout@v2 # checkout the repository content to github runner
-
-      - name: setup python
+      - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.x' # install the latest python version
+          python-version: '^3.9'
 
-      - name: execute py script # email-from-python.py
-        env: 
-          EMAIL_KEY: ${{ secrets.EMAIL_KEY }}
-        run: python b2b_prospection_app.py
+      - name: Show environment
+        run: |
+          env | grep EMAIL
+
+      - name: Create python script
+        run: |
+          cat > showenv.py <<'EOF'
+          import os
+
+          print(f'Email username is {os.environ.get("EMAIL_USER", "<unknown")}')
+          print(f'Email password is {os.environ.get("EMAIL_PASSWORD", "<unknown")}')
+          EOF
+
+      - name: Run python script
+        run: |
+          python showenv.py
