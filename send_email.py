@@ -14,9 +14,9 @@ def send_email(smtp_server, smtp_port, email_message, subject, attachment=None):
     message['Subject'] = Header(subject)
     message.attach(MIMEText(email_message,'plain', 'utf-8'))
     if attachment:
-    att = MIMEApplication(attachment.read(), _subtype="txt")
-    att.add_header('Content-Disposition', 'attachment', filename=attachment.name)
-    message.attach(att)
+        att = MIMEApplication(attachment.read(), _subtype="txt")
+        att.add_header('Content-Disposition', 'attachment', filename=attachment.name)
+        message.attach(att)
 
     server = smtplib.SMTP(smtp_server, smtp_port)
     server.starttls()
