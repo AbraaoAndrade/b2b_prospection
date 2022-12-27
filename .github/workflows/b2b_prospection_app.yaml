@@ -21,9 +21,3 @@ jobs:
         env: 
           EMAIL_KEY: ${{ secrets.EMAIL_KEY }}
         run: python b2b_prospection_app.py
-Footer
-© 2022 GitHub, Inc.
-Footer navigation
-Terms
-Privacy
-Sec
