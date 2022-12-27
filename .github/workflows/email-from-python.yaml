@@ -1,4 +1,4 @@
-name: email-from-python
+name: b2b_prospection_app.py
 
 on:
   schedule:
