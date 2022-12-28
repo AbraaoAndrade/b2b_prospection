@@ -1,4 +1,4 @@
-name: Workflow with secrets
+name: Workflow with secrets test
 
 on:
   workflow_dispatch:
