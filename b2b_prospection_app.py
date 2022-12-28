@@ -17,8 +17,6 @@ def about():
     As interações com esse serviço se dão mediante uma chave de API, portanto, para experimentar o APP será necessário [criar uma chave](%s).
     """% get_api_key_url)
 
-    st.text(Hasher(['yas123']).generate())
-
     with st.form("email_form", clear_on_submit=False):
         fullname = st.text_input(label="Nome Completo", placeholder="Digite seu nome completo")
         email = st.text_input(label="Email", placeholder="Digite seu email")
