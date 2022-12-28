@@ -17,10 +17,12 @@ def about():
     As interações com esse serviço se dão mediante uma chave de API, portanto, para experimentar o APP será necessário [criar uma chave](%s).
     """% get_api_key_url)
 
+    st.text(Hasher(['yas123']).generate())
+
     with st.form("email_form", clear_on_submit=False):
-        fullname = st.text_input(label="Nome Completo", placeholder="Porfavor digite seu nome completo")
-        email = st.text_input(label="Email", placeholder="Porfavor digite seu email")
-        text = st.text_area(label="Texto", placeholder="Porfavor digite sua mensagem aqui")
+        fullname = st.text_input(label="Nome Completo", placeholder="Digite seu nome completo")
+        email = st.text_input(label="Email", placeholder="Digite seu email")
+        text = st.text_area(label="Texto", placeholder="Digite sua mensagem aqui")
 
         submitted = st.form_submit_button("Enviar")
     

@@ -12,6 +12,10 @@ credentials:
       email: lucasgmmm0310@gmail.com
       name: Lucas Gabriel
       password: $2b$12$DfZNCA6f4thhI7hFzO/AFOJnt9ZrXdumxiQJymjYo8FYjSx5VYn6y
+    yasgawd:
+      email: yasgawd0@gmail.com
+      name: Yasmin
+      password: $2b$12$53bgtx6cqN/dXapfyrbiLuiOB8.1LJFpB6xsfA5zQO4eOPFPhHuPK
 cookie:
   expiry_days: 0
   key: random_signature_key
