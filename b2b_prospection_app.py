@@ -6,8 +6,6 @@ from matplotlib.ticker import MaxNLocator
 from st_switcher import st_switcher
 from streamlit_authenticator import Authenticate, Hasher
 import yaml
-import os
-
 
 from b2b_report import *
 from send_email import *
@@ -26,7 +24,6 @@ def about():
 
         submitted = st.form_submit_button("Enviar")
     
-    st.text(os.environ.get("EMAIL_KEY"))
     if submitted:
         extra_info = """
         ---------------------------------------------------------------------------- \n
@@ -37,7 +34,9 @@ def about():
 
         message = extra_info + text
 
-        send_email(smtp_server="smtp.gmail.com", smtp_port=587, email_message=message, subject="B2B prospection APP")
+        send_email(sender=st.secrets["EMAIL_USER"], password=st.secrets["EMAIL_KEY"],
+                   receiver=st.secrets["EMAIL_USER"], smtp_server="smtp.gmail.com", smtp_port=587,
+                   email_message=message, subject="B2B prospection APP")
 
 
 

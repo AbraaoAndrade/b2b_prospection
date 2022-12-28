@@ -3,11 +3,8 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.header import Header
 from email.mime.application import MIMEApplication
-import os
 
-def send_email(smtp_server, smtp_port, email_message, subject, attachment=None):
-    sender, password = st.secrets["EMAIL_USER"], os.environ.get("EMAIL_KEY")
-    receiver = sender 
+def send_email(sender, password, receiver, smtp_server, smtp_port, email_message, subject, attachment=None):
 
     message = MIMEMultipart()
     message['To'] = Header(receiver)
