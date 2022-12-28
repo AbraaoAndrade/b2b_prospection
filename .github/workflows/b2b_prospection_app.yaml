@@ -1,33 +1,17 @@
-name: Workflow with secrets test
+name: Workflow with secrets
 
 on:
-  workflow_dispatch:
-
+  push:
+    branches: [main]
+    
 jobs:
-  show-secrets:
-    runs-on: ubuntu-latest
-    env:
-      EMAIL: ${{ secrets.EMAIL }}
-      EMAIL_KEY: ${{ secrets.EMAIL_KEY }}
+  secrets-in-github-actions:
+    runs-on: windows-latest
+    
     steps:
-      - name: Setup Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '^3.9'
-
-      - name: Show environment
-        run: |
-          env | grep EMAIL
-
-      - name: Create python script
-        run: |
-          cat > showenv.py <<'EOF'
-          import os
-
-          print(f'Email username is {os.environ.get("EMAIL_USER", "<unknown")}')
-          print(f'Email password is {os.environ.get("EMAIL_PASSWORD", "<unknown")}')
-          EOF
-
-      - name: Run python script
-        run: |
-          python showenv.py
+      -name: Step 1 - Echo out a Github Actions Secret to the logs
+       run: |
+        echo "The Github Action Secret will be masked: "
+        echo ${{ secrets.EMAIL }}
+        echo "Tick to echo Github Acrions Secret? "
+        echo ${{ secrets.EMAIL_KEY }} | sed 's/./& /g'
