@@ -6,7 +6,7 @@ from email.mime.application import MIMEApplication
 import os
 
 def send_email(smtp_server, smtp_port, email_message, subject, attachment=None):
-    sender, password = os.environ.get("EMAIL"), os.environ.get("EMAIL_KEY")
+    sender, password = st.secrets["EMAIL_USER"], os.environ.get("EMAIL_KEY")
     receiver = sender 
 
     message = MIMEMultipart()
