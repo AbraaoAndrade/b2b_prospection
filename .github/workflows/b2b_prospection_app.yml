@@ -3,15 +3,10 @@ name: Workflow with secrets
 on:
   push:
     branches: [main]
-    
+
 jobs:
-  secrets-in-github-actions:
-    runs-on: windows-latest
-    
-    steps:
-      -name: Step 1 - Echo out a Github Actions Secret to the logs
-       run: |
-        echo "The Github Action Secret will be masked: "
-        echo ${{ secrets.EMAIL }}
-        echo "Tick to echo Github Acrions Secret? "
-        echo ${{ secrets.EMAIL_KEY }} | sed 's/./& /g'
+  show-secrets:
+    runs-on: ubuntu-latest
+    env:
+      EMAIL: ${{ secrets.EMAIL }}
+      EMAIL_KEY: ${{ secrets.EMAIL_KEY }}
