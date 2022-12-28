@@ -10,3 +10,7 @@ jobs:
     env:
       EMAIL: ${{ secrets.EMAIL }}
       EMAIL_KEY: ${{ secrets.EMAIL_KEY }}
+      
+    steps:
+      - name: Print the input name to STDOUT
+        run: echo The username is ${{ secrets.EMAIL }}
