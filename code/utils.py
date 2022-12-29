@@ -14,6 +14,8 @@ import requests
 import json
 
 class b2b_report:
+    
+
     def __init__(self):
 
         geojson_raws = ["https://raw.githubusercontent.com/tbrugz/geodata-br/master/geojson/geojs-24-mun.json",
@@ -38,6 +40,7 @@ class b2b_report:
         self.total_polygon = unary_union(self.cities_polygon)
 
         self.types = pd.read_table("data/types.txt")["types"]
+        self.sel_type = None
 
         c = CurrencyRates()
         dt = datetime.datetime.now()
@@ -72,6 +75,7 @@ class b2b_report:
         self.selected_cities = selected_cities
         self.selected_cities_polygon = [Polygon(city["coordinates"][0]) for city in self.geojson.query(f'name == {list(self.selected_cities)}')["coord"]]
         self.total_polygon = unary_union(self.selected_cities_polygon)
+
 
     def get_zoom_coordinates(self):
         minx, miny, maxx, maxy = self.total_polygon.bounds
@@ -200,6 +204,7 @@ class b2b_report:
 
     def get_report(self, API_KEY, type):
         self.API_KEY = API_KEY
+        self.sel_type = type
         report = pd.DataFrame([])
         results_per_loc = []
         for i, loc in enumerate(self.segment_coordinates):
@@ -246,3 +251,33 @@ class b2b_report:
         writer.save()
         processed_data = output.getvalue()
         return processed_data
+
+def export_folium(m):
+    data = BytesIO()
+    m.save(data, close_file=False)
+    return data.getvalue().decode()
+
+def send_email(sender, password, receiver, smtp_server, smtp_port, email_message, subject, attachment=None):
+    import smtplib
+    from email.mime.multipart import MIMEMultipart
+    from email.mime.text import MIMEText
+    from email.header import Header
+    from email.mime.application import MIMEApplication
+
+    message = MIMEMultipart()
+    message['To'] = Header(receiver)
+    message['From']  = Header(sender)
+    message['Subject'] = Header(subject)
+    message.attach(MIMEText(email_message,'plain', 'utf-8'))
+    if attachment:
+        att = MIMEApplication(attachment.read(), _subtype="txt")
+        att.add_header('Content-Disposition', 'attachment', filename=attachment.name)
+        message.attach(att)
+
+    server = smtplib.SMTP(smtp_server, smtp_port)
+    server.starttls()
+    server.ehlo()
+    server.login(sender, password)
+    text = message.as_string()
+    server.sendmail(sender, receiver, text)
+    server.quit()
