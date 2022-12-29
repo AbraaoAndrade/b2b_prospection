@@ -67,8 +67,6 @@ def app():
         st.experimental_rerun()
     else:
         st.session_state.sidebar_state = 'collapsed'
-
-    st.text(st.session_state.b2b_report_env.radius_km)
         
     # 3. resultados --------------------------------------------------------------------------------------------
         # previsão de gastos
