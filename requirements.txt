@@ -12,3 +12,4 @@ streamlit==1.16.0
 streamlit_authenticator==0.2.1
 streamlit_folium==0.8.1
 XlsxWriter==3.0.3
+openpyxl==3.0.10
