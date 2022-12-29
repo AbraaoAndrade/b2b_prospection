@@ -11,14 +11,13 @@ def about():
     with col2:
         st.markdown("[![Title](https://img.icons8.com/ios-glyphs/30/null/github.png)](https://github.com/AbraaoAndrade/b2b_prospection)")
     with col3:
-        st.markdown("[![Title](https://img.icons8.com/ios-glyphs/30/null/linkedin-circled--v1.png)](linkedin.com/in/abraão-andrade-3632031b0)")
+        st.markdown("[![Title](https://img.icons8.com/ios-glyphs/30/null/linkedin-circled--v1.png)](https://linkedin.com/in/abraão-andrade-3632031b0)")
+    
     
     st.markdown("## Contextualização")
-
     st.markdown("""
     A prospecção comercial é o primeiro passo para a venda. Esse tipo de atividade é fundamental para \
-    construção de um bom volume de negócios, portanto, mapear a praça em que sua empresa está inserida \
-    é um passo fundamental para um bom planejamento estratégico de vendas.
+    construção de um bom volume de negócios, portanto, mapear a praça em que sua empresa está inserida é inerente a um bom planejamento estratégico de vendas.
     """)
 
     st.markdown("## Projeto")
@@ -28,16 +27,31 @@ def about():
     """)
     st.markdown("""
     Para isso foi utilizada a API Places, um serviço da Google que retorna informações sobre lugares usando \
-    solicitações HTTP. Essa API permite pesquisar estabelecimentos dentro de um raio a partir de uma coordenada \
-    de referência, restrito a um tipo, por exemplo: farmácia, bar, padaria…
+    solicitações HTTP. Essa API permite pesquisar estabelecimentos por tipo, como farmácia, bar, padaria, …, \
+    dentro de um raio a partir de uma coordenada de referência.
     """)
     st.markdown("""
-    Acontece que há um limite de 60 resultados por request, por isso, a ideia é fragmentar sua região de\
-    interesse em sub-regiões para otimizar o número de estabelecimentos gerado.
+    Acontece que há um limite de 60 resultados por requisição na API, por isso, a ideia é fragmentar sua \
+    região de interesse em sub-regiões para otimizar o número de estabelecimentos gerado. No exemplo abaixo, \
+    foi realizada uma prospecção de farmácias em Natal-RN. Para isso a cidade foi subdividida em circulos com \
+    raio de 900 metros, resultando em 59 subregiões.
     """)
     
     st.image("images/processo.png")
+
+    st.markdown("""
+    O gráfico de barras abaixo mostra o número de resultados retornados por subregião. O objetivo desse plot \
+    é mostrar o grau de eficiência da segmentação. O ideal é que as barrinhas estejam o mais próximo possível \
+    do número máximo de resultados, 60.
+    """)
+
     st.image("images/plot.png")
+
+    st.markdown("""
+    Com a lista de estabelecimentos gerada, o último passo é usar a mesma API para adicionar os detalhes \
+    importantes, como telefone e horário de funcionamento.
+    """)
+
     st.dataframe(pd.read_excel("data/report_pharmacy.xlsx"), height=200)
 
     get_api_key_url = "https://developers.google.com/maps/documentation/places/web-service/get-api-key"
