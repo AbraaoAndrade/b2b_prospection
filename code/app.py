@@ -70,7 +70,7 @@ def app():
         
     # 3. resultados --------------------------------------------------------------------------------------------
         # previsão de gastos
-    if st.session_state['authentication_username'] in ["abraaoandrade"]:
+    if st.session_state['authentication_username'] in ["abraaoandrade", "Nanan159"]:
         if not st.session_state.b2b_report_env.report.empty:
             prev_gasto_usd, prev_gasto_brl = st.session_state.b2b_report_env.budget()
             prev_gasto_details_usd, prev_gasto_details_brl = st.session_state.b2b_report_env.budget(details=True)
