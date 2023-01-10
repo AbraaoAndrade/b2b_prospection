@@ -16,6 +16,10 @@ credentials:
       email: yasgawd0@gmail.com
       name: Yasmin Gomes
       password: $2b$12$53bgtx6cqN/dXapfyrbiLuiOB8.1LJFpB6xsfA5zQO4eOPFPhHuPK
+    Nanan159:
+      email: irenan0150@gmail.com
+      name: Renan 
+      password: $2b$12$3yYoo/Lm9IkMTaxwh/vfFuClv9qsuUVfVUvjvQU/Qu0915O/0Yx82
 cookie:
   expiry_days: 0
   key: random_signature_key
