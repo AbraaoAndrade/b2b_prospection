@@ -24,6 +24,10 @@ credentials:
       email: juninhopb97@gmail.com
       name: João Henrique da Silva
       password: $2b$12$01fWpddoRj8h4nVW2EXspuoBRhvF6R6Uha5.R6hrCmvbfNxZxJFUa
+    rafa:
+      email: Rafael
+      name: rafa25santis@gmail.com
+      password: $2b$12$kLnmMj4GaLtLgeGzCx9m7.WbGJ6zgRnmjYirGc9YWtZ12Cf89U3EO
 cookie:
   expiry_days: 0
   key: random_signature_key
